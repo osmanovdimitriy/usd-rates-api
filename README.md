@@ -13,3 +13,7 @@
 2. Скопируй `.env.example` в `.env` и впиши свой пароль PostgreSQL
 3. `python -m src.parser`
 4. `python -m src.db`
+
+## Автор
+
+osmanovdimitriy
