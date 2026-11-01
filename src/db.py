@@ -31,7 +31,17 @@ class RatesDB:
                     )
                 """)
             conn.commit()
-
+    def save_currency(self, code: str, name: str, symbol: str | None = None) -> None:
+        """Добавить валюту в справочник currencies."""
+        with self._connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO currencies (code, name, symbol)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (code) DO UPDATE
+                    SET name = EXCLUDED.name, symbol = EXCLUDED.symbol
+                """, (code, name, symbol))
+            conn.commit()
     def save_rate(self, currency: str, rate: float, when: date | None = None) -> None:
         when = when or date.today()
         with self._connect() as conn:
@@ -48,7 +58,7 @@ class RatesDB:
         with self._connect() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    SELECT date, rate FROM rates
+                    SELECT id, date, rate FROM rates
                     WHERE currency = %s
                     ORDER BY date DESC
                     LIMIT %s

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ТВОЙ_ПАРОЛЬ_ИЗ_ENV
+      POSTGRES_DB: usd_rates
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:ТВОЙ_ПАРОЛЬ_ИЗ_ENV@db:5432/usd_rates
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

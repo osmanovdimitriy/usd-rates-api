@@ -23,6 +23,25 @@ class CbrParser:
                 rate_str = cols[4].text.replace(",", ".")
                 return float(rate_str)
         return None
+    def get_all_rates(self) -> list[dict]:
+        """Спарсить все валюты с главной страницы ЦБ."""
+        response = requests.get(self.url)
+        soup = BeautifulSoup(response.text, "html.parser")
+        table = soup.find("table", class_="data")
+        if table is None:
+            return []
+
+        result = []
+        for row in table.find_all("tr"):
+            cols = row.find_all("td")
+            if len(cols) < 5:
+                continue
+            result.append({
+                "code": cols[1].text.strip(),
+                "name": cols[3].text.strip(),
+                "rate": float(cols[4].text.replace(",", ".")),
+            })
+        return result
 
 class CryptoParser(CbrParser):
     """Наследник CbrParser — просто демонстрация наследования."""

@@ -1,4 +1,10 @@
+fastapi[standard]
+sqlalchemy[asyncio]
+asyncpg
 psycopg[binary]
 requests
 beautifulsoup4
 python-dotenv
+alembic
+pytest
+httpx
